@@ -1,0 +1,113 @@
+<body>
+
+<div class="container">
+    <h1>Exercícios Práticos: DOM, Eventos e Storage</h1>
+    <p>Utilize a tag <code>&lt;script&gt;</code> no final deste arquivo. <strong>Regra de Ouro:</strong> Não altere o HTML. Use apenas <code>addEventListener</code> e <code>DOMContentLoaded</code>!</p>
+
+    <div class="exercise-box">
+        <h3>1. Separando o JS do HTML</h3>
+        <p>Remova a dependência do <code>onclick</code>. Capture o botão abaixo pelo seu ID e adicione um <em>Event Listener</em> de 'click' que mude o texto dele para "Fui clicado via Listener!".</p>
+        <button id="btn-listener">Me clique (sem onclick)</button>
+    </div>
+
+    <div class="exercise-box">
+        <h3>2. Criação Dinâmica (createElement)</h3>
+        <p>Digite algo no campo de texto e clique em adicionar. O seu JS deve ler o <code>.value</code> do input, usar <code>document.createElement('li')</code> e dar um <code>append</code> na lista vazia abaixo.</p>
+        <input type="text" id="input-item" placeholder="Novo item da lista...">
+        <button id="btn-add">Adicionar</button>
+        <ul id="lista-itens" class="dynamic-list"></ul>
+    </div>
+
+    <div class="exercise-box">
+        <h3>3. O Cronômetro (setInterval)</h3>
+        <p>Crie uma lógica para um cronômetro. Ao clicar em "Iniciar", use <code>setInterval</code> para aumentar o número do visor a cada 1 segundo (1000ms).</p>
+        <button id="btn-iniciar">Iniciar Cronômetro</button>
+        <span id="visor-cronometro" class="output-text">0</span>
+    </div>
+
+    <div class="exercise-box">
+        <h3>4. Memória com Local Storage</h3>
+        <p>Escolha um time no menu suspenso. O JS deve escutar o evento <code>change</code> do menu, atualizar o texto "Nenhum selecionado" e <strong>salvar a escolha no Local Storage</strong>. <br><em>Desafio:</em> Ao recarregar a página, o código deve buscar o valor salvo no Storage e exibi-lo automaticamente.</p>
+        
+        <select id="select-time" title="Escolha um time">
+            <option value="">Escolha um time...</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Corinthians">Corinthians</option>
+            <option value="Palmeiras">Palmeiras</option>
+            <option value="Santos">Santos</option>
+        </select>
+        <span id="time-selecionado" class="output-text">Nenhum selecionado</span>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Exercício 1 ---
+        const botaoListener=document.querySelector('#btn-listener');
+
+        botaoListener.addEventListener('click', () => {
+            botaoListener.innerHTML="Fui clicado via Listener!";
+        });
+
+        
+        
+    // --- Exercício 2 ---
+    const botaoAdd=document.querySelector('#btn-add');
+    const input=document.querySelector('#input-item');
+    const lista=document.querySelector('#lista-itens');
+
+    botaoAdd.addEventListener('click', () =>{
+
+        const texto=input.value;
+
+        const li=document.createElement('li');
+
+        li.innerHTML=texto;
+
+        lista.append(li);
+
+        input.value="";
+    });
+
+
+    // --- Exercício 3 ---
+    let tempo=0;
+
+    const botaoIniciar=document.querySelector('#btn-iniciar');
+    const visor=document.querySelector('#visor-cronometro');
+
+    botaoIniciar.addEventListener('click', () => {
+
+        setInterval(() => {
+            tempo++;
+            visor.innerHTML=tempo;
+        },1000);
+
+    });
+
+
+    // --- Exercício 4 ---
+    const selectTime=document.querySelector('#select-time');
+    const textoTime=document.querySelector('#time-selecionado');
+
+    const salvo=localStorage.getItem('time');
+
+    if(salvo){
+        textoTime.innerHTML=salvo;
+    }
+
+    selectTime.addEventListener('change', () => {
+        const escolha=selectTime.value;
+        textoTime.innerHTML=escolha;
+        localStorage.setItem('time',escolha);
+
+    });
+
+});
+
+</script>
+
+
+</body>

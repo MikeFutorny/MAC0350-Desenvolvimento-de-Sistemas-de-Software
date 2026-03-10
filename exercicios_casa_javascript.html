@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Desafios Para Casa JS</title>
+</head>
+
+<body>
+
+<h2>Desafio 1: Interruptor</h2>
+
+<p id="estado-luz">A luz está APAGADA</p>
+
+<button onclick="alternarLuz()">Interruptor</button>
+
+<script>
+
+function alternarLuz(){
+    const texto=document.querySelector('#estado-luz');
+    if(texto.innerHTML==="A luz está APAGADA"){
+        texto.innerHTML="A luz está ACESA";
+    }
+    else{
+        texto.innerHTML="A luz está APAGADA";
+    }
+}
+
+</script>
+
+<h2>Desafio 2: Multiplicador</h2>
+
+<h1 id="numero">2</h1>
+
+<button onclick="dobrar()">Dobrar</button>
+<script>
+
+let valor=2;
+function dobrar(){
+    valor=valor*2;
+
+    const numeroTela=document.querySelector('#numero');
+    numeroTela.innerHTML=valor;
+
+    if(valor>100){
+        alert(`Cuidado, o número ${valor} está ficando muito grande!`);
+    }
+}
+
+</script>
+
+</body>
+</html>

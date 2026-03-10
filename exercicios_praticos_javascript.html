@@ -1,0 +1,92 @@
+<body>
+
+<div class="container">
+    <h1>Exercícios Práticos: JavaScript Básico</h1>
+    <p>Utilize a tag <code>&lt;script&gt;</code> no final deste arquivo para escrever a lógica de cada um dos botões abaixo.</p>
+
+    <div class="exercise-box">
+        <h3>1. O Primeiro Evento</h3>
+        <p>Crie uma função chamada <code>dispararAlerta()</code> que exiba uma mensagem de boas-vindas usando <code>alert()</code>. Vincule esta função ao clique do botão abaixo.</p>
+        <button onclick="dispararAlerta()">Exibir Alerta</button>
+    </div>
+
+    <div class="exercise-box">
+        <h3>2. Loops e Console</h3>
+        <p>Crie uma função chamada <code>contarPares()</code>. Ela deve usar um laço <code>for</code> de 1 a 10 e imprimir no <strong>console do navegador</strong> apenas os números pares. Lembre-se de abrir o F12 para ver o resultado!</p>
+        
+        
+        
+        <br>
+        <button onclick="contarPares()">Imprimir Pares no Console</button>
+    </div>
+
+    <div class="exercise-box">
+        <h3>3. Manipulando a DOM (querySelector)</h3>
+        <p>Use o <code>document.querySelector</code> para selecionar o texto ao lado do botão. Quando o botão for clicado, mude o <code>innerHTML</code> desse texto para "JavaScript Dominado!".</p>
+        <button onclick="mudarTexto()">Mudar Texto</button>
+        <span id="texto-alvo" class="output-text">Texto Original</span>
+    </div>
+
+    <div class="exercise-box">
+        <h3>4. Condicionais e Tipagem (===)</h3>
+        <p>Crie uma função que verifique o estado do texto abaixo. Se o texto for estritamente igual a "Desligado", mude-o para "Ligado". Caso contrário, mude de volta para "Desligado".</p>
+        <button onclick="alternarEstado()">Alternar (Toggle)</button>
+        <span id="texto-estado" class="output-text">Desligado</span>
+    </div>
+
+    <div class="exercise-box">
+        <h3>5. Contador Dinâmico com Template Literals</h3>
+        <p>Declare uma variável global com valor 10. Toda vez que clicar no botão, diminua 1 do valor e atualize a tela. Use <em>Template Literals</em> para exibir um <code>alert(`Fim do tempo!`)</code> quando chegar a zero.</p>
+        <button onclick="contagemRegressiva()">Diminuir</button>
+        <span id="visor-contador" class="output-text">10</span>
+    </div>
+
+</div>
+
+<script>
+    // Exercício 1
+    function dispararAlerta() {
+        alert("Bem-vindo!");
+    }
+
+    // Exercício 2
+    function contarPares() {
+        for(let i = 1; i <= 10; i++){
+            if(i % 2 === 0){
+                console.log(i);
+            }
+        }
+    }
+
+    // Exercício 3
+    function mudarTexto() {
+        const texto = document.querySelector('#texto-alvo');
+        texto.innerHTML = "JavaScript Dominado!";
+    }
+
+    // Exercício 4
+    function alternarEstado() {
+        const state = document.querySelector('#texto-estado');
+        if(state.innerHTML === "Desligado"){
+            state.innerHTML = "Ligado";
+        } 
+        else{
+            state.innerHTML = "Desligado";
+        }
+    }
+
+    // Exercício 5
+    let valorContador = 10;
+    function contagemRegressiva() {
+        valorContador--;
+        const visor = document.querySelector('#visor-contador');
+        visor.innerHTML = valorContador;
+
+        if(valorContador === 0){
+            alert(`Fim do tempo!`);
+        }
+    }
+</script>
+
+
+</body>
