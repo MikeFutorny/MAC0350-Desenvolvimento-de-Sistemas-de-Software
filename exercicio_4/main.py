@@ -19,7 +19,7 @@ async def delete_users():
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    with open("index.html", "r", encoding="utf-8") as f:
+    with open("exercicio_4_index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 
