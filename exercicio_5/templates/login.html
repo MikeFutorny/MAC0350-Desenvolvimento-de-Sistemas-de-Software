@@ -1,0 +1,29 @@
+<h2>Login</h2>
+
+<input id="nome" placeholder="Nome">
+<input id="senha" placeholder="Senha">
+
+<button onclick="login()">Entrar</button>
+
+<script>
+async function login() {
+    const dados = {
+        nome: document.getElementById("nome").value,
+        senha: document.getElementById("senha").value
+    };
+
+    const res = await fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    });
+
+    if (res.ok) {
+        window.location.href = "/home";
+    } else {
+        alert("login Falhou");
+    }
+}
+</script>
