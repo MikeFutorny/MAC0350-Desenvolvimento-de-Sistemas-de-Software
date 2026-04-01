@@ -24,10 +24,6 @@ def criar_aluno(aluno: Aluno):
         session.commit()
         session.refresh(aluno)
         return aluno
-        # Implemente aqui os comandos para adicionar, salvar e depois
-        # como resposta da API:
-        # retorne o objeto aluno da forma em que ele foi salvo no banco de dados.
-
 
 @app.post("/tarefas")
 def criar_tarefa(tarefa: Tarefa):
@@ -42,10 +38,6 @@ def criar_tarefa(tarefa: Tarefa):
 def listar_alunos():
     with Session(engine) as session:
         return session.exec(select(Aluno)).all()
-        # Implemente aqui o comando para retornar: 
-        # A lista de TODOS os alunos 
-        # cadastrados no banco de dados.
-
 
 @app.get("/tarefas")
 def listar_tarefas():
@@ -53,7 +45,7 @@ def listar_tarefas():
         return session.exec(select(Tarefa)).all()
 
 @app.get("/alunos/{aluno_nusp}/tarefas")
-def listar_tarefas_do_aluno(aluno_nusp: int):
+def listar_tarefas_do_aluno(aluno_nusp:int):
     with Session(engine) as session:
         aluno = session.exec(
             select(Aluno).where(Aluno.nusp == aluno_nusp)
@@ -63,11 +55,3 @@ def listar_tarefas_do_aluno(aluno_nusp: int):
             return {"Nao encontrou": "Aluno não encontrado"}
 
         return aluno.tarefas
-    
-        # Implemente aqui os comandos para retornar: 
-        # A lista de tarefas associadas a um aluno.
-
-        # você pode fazer esta consulta tanto
-        # através da estruturação de uma consulta normal SQL,
-        # quanto simplesmente pegando o Aluno
-        # e retornando a propriedade implementada anteriormente.
