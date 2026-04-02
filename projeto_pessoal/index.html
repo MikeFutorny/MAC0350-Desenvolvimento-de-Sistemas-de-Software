@@ -1,0 +1,50 @@
+<h1>Buscar viagens</h1>
+
+<input id="origem" placeholder="origem">
+<input id="destino" placeholder="destino">
+
+<button onclick="buscar()">buscar</button>
+
+<ul id="resultados"></ul>
+
+<script>
+async function buscar() {
+    const origem = document.getElementById("origem").value
+    const destino = document.getElementById("destino").value
+
+    const res = await fetch(`/viagens?origem=${origem}&destino=${destino}`)
+    const data = await res.json()
+
+    const lista = document.getElementById("resultados")
+    lista.innerHTML = ""
+
+    data.forEach(v => {
+        const li = document.createElement("li")
+
+        li.innerHTML = `
+            ${v.origem_id} -> ${v.destino_id}
+            ${v.horario}
+            R$ ${v.preco}
+            <button onclick="reservar(${v.viagem_id})">reservar</button>
+        `
+
+        lista.appendChild(li)
+    })
+}
+
+async function reservar(id) {
+    const assento = prompt("assento?")
+
+    const res = await fetch("/reservas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            viagem_id: id,
+            assento: Number(assento)
+        })
+    })
+
+    if (res.ok) alert("ok")
+    else alert("erro")
+}
+</script>
