@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MAC0350 Project</title>
+
+  <link rel="stylesheet" href="/css/style.css">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+
+<body>
+
+<header>
+  <h1>Meu Website</h1>
+  <p>MAC0350 • USP</p>
+</header>
+
+<nav>
+  <a hx-get="/curtidas" hx-target="#content">Likes</a>
+  <a hx-get="/jupiter" hx-target="#content">Jupiter</a>
+
+  <a hx-get="/professor/sobre" hx-target="#content">Sobre</a>
+  <a hx-get="/professor/ensino" hx-target="#content">Ensino</a>
+  <a hx-get="/professor/publicacoes" hx-target="#content">Publications</a>
+  <a hx-get="/professor/contato" hx-target="#content">Contact</a>
+</nav>
+
+<main id="content">
+  <section class="card">
+    <h2>Welcome</h2>
+    <p>Select a tab above.</p>
+  </section>
+</main>
+
+<footer>
+  <p>IME-USP • 2026</p>
+</footer>
+
+</body>
+</html>

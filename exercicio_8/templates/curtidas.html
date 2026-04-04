@@ -1,0 +1,20 @@
+<section class="card" id="likes-container">
+
+  <h2>Likes: 0</h2>
+
+  <button 
+    hx-post="/curtir"
+    hx-target="#likes-container"
+    hx-swap="innerHTML">
+    Like!
+  </button>
+
+  <button 
+    hx-post="/curtir?acao=reset"
+    hx-target="#likes-container"
+    hx-swap="innerHTML"
+    hx-confirm="Are you sure you want to reset likes?">
+    Reset
+  </button>
+
+</section>
