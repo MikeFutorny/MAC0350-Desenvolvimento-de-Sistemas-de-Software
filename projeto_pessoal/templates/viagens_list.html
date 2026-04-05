@@ -1,0 +1,5 @@
+<ul id="lista-viagens">
+{% for viagem in viagens %}
+    <li>{{ viagem.origem_id }} → {{ viagem.destino_id }} | {{ viagem.horario }} | R$ {{ viagem.preco }}</li>
+{% endfor %}
+</ul>

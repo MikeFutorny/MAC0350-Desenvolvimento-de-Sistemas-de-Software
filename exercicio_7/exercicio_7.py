@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from sqlmodel import Session, select, SQLModel, create_engine
-from exericio_7_models import Aluno, Tarefa
+from exercicio_7.exericio_7_models import Aluno, Tarefa
 
 arquivo_sqlite = "exercicio_7.db"
 url_sqlite = f"sqlite:///{arquivo_sqlite}"
