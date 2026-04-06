@@ -1,1 +1,6 @@
-<li>Viagem: {{ reserva.viagem_id }} | Assento: {{ reserva.assento }} | Cliente: {{ reserva.cliente_id }}</li>
+<li>
+    Reserva {{ reserva.reserva_id }} |
+    Viagem {{ reserva.viagem_id }} |
+    Assento {{ reserva.assento }} |
+    Cliente {{ reserva.cliente_id if reserva.cliente_id else "Anônimo" }}
+</li>

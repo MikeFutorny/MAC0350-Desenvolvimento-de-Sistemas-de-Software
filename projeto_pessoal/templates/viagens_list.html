@@ -1,5 +1,14 @@
-<ul id="lista-viagens">
-{% for viagem in viagens %}
-    <li>{{ viagem.origem_id }} → {{ viagem.destino_id }} | {{ viagem.horario }} | R$ {{ viagem.preco }}</li>
+<ul>
+{% for v in viagens %}
+    <li>
+        Viagem {{ v.viagem_id }} | Origem {{ v.origem_id }} → Destino {{ v.destino_id }} | R$ {{ v.preco }}
+
+        <form hx-post="/reservas" hx-target="#lista-reservas" hx-swap="beforeend">
+            <input type="hidden" name="viagem_id" value="{{ v.viagem_id }}">
+            <input type="number" name="assento" placeholder="Assento" required>
+            <input type="number" name="cliente_id" placeholder="Cliente ID">
+            <button type="submit">Reservar</button>
+        </form>
+    </li>
 {% endfor %}
 </ul>

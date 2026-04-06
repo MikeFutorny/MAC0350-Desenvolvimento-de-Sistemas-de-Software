@@ -1,5 +1,10 @@
-<ul id="lista-reservas">
-{% for reserva in reservas %}
-    <li>Viagem: {{ reserva.viagem_id }} | Assento: {{ reserva.assento }} | Cliente: {{ reserva.cliente_id }}</li>
+<ul>
+{% for r in reservas %}
+    <li>
+        Reserva {{ r.reserva_id }} |
+        Viagem {{ r.viagem_id }} |
+        Assento {{ r.assento }} |
+        Cliente {{ r.cliente_id if r.cliente_id else "Anônimo" }}
+    </li>
 {% endfor %}
 </ul>

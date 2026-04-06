@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="login-card">
+    <h2 style="text-align:center;">Entrar</h2>
+
+    <form action="/login" method="post">
+        <input type="text" name="nome" placeholder="Seu nome" required>
+        <input type="text" name="contato" placeholder="Contato" required>
+
+        <button type="submit">Entrar</button>
+    </form>
+</div>
+
+{% endblock %}
