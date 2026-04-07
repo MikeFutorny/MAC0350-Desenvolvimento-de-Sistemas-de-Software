@@ -2,22 +2,82 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trip Bus 🚌</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <style>
+        .navbar {
+            background-color: #111;
+            padding: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            border-bottom: 2px solid #fff; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: #fff; 
+        }
+
+        .header {
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .trip-white {
+            color: #fff;
+        }
+
+        .bus-orange {
+            color: #f39c12;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+    </style>
 </head>
-<body>
+<body style="margin: 0; font-family: sans-serif; background-color: #f39c12; min-height: 100vh;">
+
+    <nav class="navbar">
+        <a href="/" class="nav-link">
+            <span>🔍</span> Buscar Viagens
+        </a>
+        <a href="/reservas" class="nav-link">
+            <span>🎟️</span> Minhas Reservas
+        </a>
+    </nav>
 
     <header class="header">
-        <h1>🚌 Trip <span class="highlight">Bus</span></h1>
+        <h1 style="margin: 0; font-size: 3.5rem; font-weight: 900; letter-spacing: -1px;">
+            <span style="color: #fff;">🚌</span> 
+            <span class="trip-white">Trip</span> 
+            <span class="bus-orange">Bus</span>
+        </h1>
     </header>
 
     <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <p>© 2026 Trip Bus</p>
+    <footer class="footer" style="text-align: center; padding: 50px 0; color: #111; font-weight: bold;">
+        <p>© 2026 Trip Bus - Projeto USP</p>
     </footer>
 
 </body>

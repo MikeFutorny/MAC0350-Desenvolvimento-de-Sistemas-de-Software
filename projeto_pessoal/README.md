@@ -1,6 +1,8 @@
-# Sistema de Busca de Passagens de Ônibus
+# Sistema de Busca de Passagens de Ônibus (Trip Bus)
 
-Este projeto será uma aplicação web simples fullstack, desenvolvida para disciplina MAC0350 na USP. A ideia do sistema é permitir que um usuário busque viagens de ônibus entre cidades, visualize horários disponíveis e registre reservas de assentos, além de rotas de forma eficiente. O sistema foi pensado para rodar localmente e integrar um frontend, um backend e um banco de dados.
+Este projeto é uma aplicação web simples fullstack, desenvolvida para disciplina MAC0350 da USP. O sistema permite que um usuário busque viagens de ônibus entre cidades, visualize horários disponíveis e registre reservas de assentos.
+
+O sistema foi pensado para rodar localmente e integrar um frontend, um backend e um banco de dados.
 
 O frontend da aplicação será construído usando HTML, CSS e JavaScript. O backend será implementado em Python usando FastAPI, o que permite criar rotas e endpoints para comunicação com o frontend. Para persistência de dados é utilizado um banco de dados SQL, provavelmente o SQLModel para modelar as tabelas e facilitar a interação com o banco.
 
@@ -50,6 +52,14 @@ docker compose up
 Isso irá iniciar os serviços necessários para rodar a aplicação localmente.
 
 Este projeto foi desenvolvido como prática para consolidar conhecimentos em HTML, CSS, JavaScript, manipulação da DOM, criação de APIs com FastAPI, integração com banco de dados SQL e uso de Docker para executar aplicações localmente.
+
+## Uso de Inteligência Artificial
+add_all,
+ajuda com Fórmula de Haversine e conversao para de graus para radianos
+box-sizing: border-box - https://www.w3schools.com/css/css3_box-sizing.asp
+lazy load
+
+
 
 ## Autor
 

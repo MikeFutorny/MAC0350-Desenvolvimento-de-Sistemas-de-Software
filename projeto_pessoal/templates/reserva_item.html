@@ -1,6 +1,63 @@
-<li>
-    Reserva {{ reserva.reserva_id }} |
-    Viagem {{ reserva.viagem_id }} |
-    Assento {{ reserva.assento }} |
-    Cliente {{ reserva.cliente_id if reserva.cliente_id else "Anônimo" }}
-</li>
+<div class="ticket-confirmado" style="
+    background-color: #ffffff; 
+    border: 2px dashed #f39c12; 
+    padding: 20px; 
+    border-radius: 12px; 
+    color: #222; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    width: 100%; 
+    max-width: 500px; 
+    min-height: 230px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    
+    /* CENTRALIZAÇÃO */
+    margin-left: auto;       /* Margem automática na esquerda */
+    margin-right: auto;      /* Margem automática na direita */
+    align-self: center;      /* Força o alinhamento ao centro no container flex */
+">
+    <h3 style="margin-top: 0; color: #27ae60; border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.1rem; text-align: center;">
+        ✅ Reserva Confirmada
+    </h3>
+    
+    <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+        <p style="margin: 0; font-size: 0.9rem;"><strong>Passageiro:</strong> {{ reserva.cliente.nome }}</p>
+        <p style="margin: 0; font-size: 0.9rem;"><strong>Contato:</strong> {{ reserva.cliente.contato }}</p>
+
+        <div style="background: #fdf2e9; padding: 12px; border-radius: 8px; border: 1px solid #fad7a0; margin-top: 5px;">
+            <p style="margin: 0; font-weight: bold; color: #d35400;">
+                {{ reserva.viagem.origem.nome }} <span style="color: #f39c12;">→</span> {{ reserva.viagem.destino.nome }}
+            </p>
+            <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #666;">
+                📅 {{ reserva.viagem.horario }}
+            </p>
+        </div>
+    </div>
+
+    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+        
+        <div style="font-size: 0.95rem;">
+            <strong>Poltrona:</strong> 
+            <input type="number" 
+                   name="novo_assento" 
+                   value="{{ reserva.assento }}" 
+                   hx-put="/reservas/{{ reserva.reserva_id }}" 
+                   hx-target="closest .ticket-confirmado" 
+                   hx-swap="outerHTML"
+                   hx-trigger="change"
+                   style="width: 55px; padding: 4px; border: 1px solid #f39c12; border-radius: 6px; font-weight: bold; text-align: center; background: #fffcf9;">
+            <span style="font-size: 0.65rem; color: #888; display: block; margin-top: 2px;">(Mude para alterar)</span>
+        </div>
+
+        <button hx-delete="/reservas/{{ reserva.reserva_id }}" 
+                hx-target="closest .ticket-confirmado" 
+                hx-swap="outerHTML"
+                hx-confirm="Deseja realmente cancelar esta passagem?"
+                style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">
+            Cancelar
+        </button>
+    </div>
+</div>

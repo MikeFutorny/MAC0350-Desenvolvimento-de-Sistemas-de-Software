@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Request, Form
+from fastapi import FastAPI, HTTPException, Request, Form, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlmodel import SQLModel, Session, create_engine, select
 from models import Cidade, Viagem, Cliente, Reserva
@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 import random
 from datetime import datetime, timedelta
 from fastapi.staticfiles import StaticFiles
-
+import math
 
 engine = create_engine("sqlite:///bus_website.db")
 templates = Jinja2Templates(directory="templates")
@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory="templates")
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
-app = FastAPI(title="Sistema de Passagens de Bus")
+app = FastAPI(title="Sistema de Passagens Trip Bus")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -70,12 +70,21 @@ def seed_inicial_db():
         cidades_db = session.exec(select(Cidade)).all()
 
         viagens = []
-        for i in range(100):
+        for i in range(1000):
             origem, destino = random.sample(cidades_db, 2)
 
-            horas = random.randint(1, 24 * 7) # Ate uma semana de tempo
+            distancia = calcular_distancia(
+                origem.latitude, origem.longitude, 
+                destino.latitude, destino.longitude
+            )
 
-            horario = datetime.now() + timedelta(hours=horas)
+            custo_por_km = 0.3 
+            taxa_fixa = 15.00
+            preco = taxa_fixa + (distancia * custo_por_km)
+
+            minutos = random.randint(1, 7*24*60) 
+
+            horario = datetime.now() + timedelta(minutes=minutos)
 
             preco = round(random.uniform(50, 300), 2)
 
@@ -91,6 +100,23 @@ def seed_inicial_db():
         session.add_all(viagens)
         session.commit()
 
+def calcular_distancia(lat1, lon1, lat2, lon2):
+    # Raio da Terra em quilômetros
+    R = 6371.0
+    
+    # Convercao graus para radianos
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    
+    # Fórmula de Haversine
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    
+    return R * c
+
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     cliente_id = request.cookies.get("cliente_id")
@@ -99,88 +125,129 @@ def home(request: Request):
     
     return templates.TemplateResponse(request=request, name="index.html", context={})
 
-
-@app.post("/cidades", response_class=HTMLResponse)
-def criar_cidade(request: Request, nome: str = Form(...), latitude: float = Form(...), longitude: float = Form(...)):
-    cidade = Cidade(nome=nome, latitude=latitude, longitude=longitude)
-    with Session(engine) as session:
-        session.add(cidade)
-        session.commit()
-        session.refresh(cidade)
-    return templates.TemplateResponse(request=request, name="cidade_item.html", context={"cidade": cidade})
-
 @app.get("/cidades", response_class=HTMLResponse)
 def listar_cidades(request: Request):
     with Session(engine) as session:
-        cidades = session.exec(select(Cidade)).all()
+        statement = select(Cidade).order_by(Cidade.nome)
+        cidades = session.exec(statement).all()
+        
     return templates.TemplateResponse(
         request=request,
         name="cidades_options.html",
         context={"cidades": cidades}
     )
 
-@app.post("/viagens", response_class=HTMLResponse)
-def criar_viagem(request: Request, origem_id: int = Form(...), destino_id: int = Form(...), horario: str = Form(...), preco: float = Form(...)):
-    with Session(engine) as session:
-        origem = session.get(Cidade, origem_id)
-        destino = session.get(Cidade, destino_id)
-        if not origem or not destino:
-            raise HTTPException(status_code=404, detail="Cidade de origem ou destino não encontrada")
-        viagem = Viagem(origem_id=origem_id, destino_id=destino_id, horario=horario, preco=preco)
-        session.add(viagem)
-        session.commit()
-        session.refresh(viagem)
-    return templates.TemplateResponse(request=request, name="viagem_item.html", context={"viagem": viagem})
-
 @app.get("/viagens", response_class=HTMLResponse)
-def listar_viagens(request: Request, origem_id: Optional[int] = None, destino_id: Optional[int] = None):
+def listar_viagens(request: Request, origem_id: Optional[str] = None, destino_id: Optional[str] = None):
     with Session(engine) as session:
         query = select(Viagem)
-        if origem_id:
-            query = query.where(Viagem.origem_id == origem_id)
-        if destino_id:
-            query = query.where(Viagem.destino_id == destino_id)
+        
+        # String para lidar com vazio.
+        if origem_id and origem_id.strip():
+            query = query.where(Viagem.origem_id == int(origem_id))
+            
+        if destino_id and destino_id.strip():
+            query = query.where(Viagem.destino_id == int(destino_id))
+        
         viagens = session.exec(query).all()
-    return templates.TemplateResponse(request=request, name="viagens_list.html", context={"viagens": viagens})
+        
+        for v in viagens:
+            _ = v.origem #Lazy loading forca isso
+            _ = v.destino
 
-@app.get("/clientes", response_class=HTMLResponse)
+        viagens_ordenadas = sorted(viagens, key=lambda x: x.horario)
+
+    return templates.TemplateResponse(
+        request=request, 
+        name="viagens_list.html", 
+        context={"viagens": viagens_ordenadas}
+    )
+
+@app.get("/clientes", response_class=HTMLResponse) # Para teste de desenvolvimento
 def listar_clientes(request: Request):
     with Session(engine) as session:
         clientes = session.exec(select(Cliente)).all()
     return templates.TemplateResponse(request=request, name="clientes_list.html", context={"clientes": clientes})
 
+
 @app.post("/reservas", response_class=HTMLResponse)
 def criar_reserva(request: Request, viagem_id: int = Form(...), assento: int = Form(...)):
+    if assento < 1:
+        return HTMLResponse(content="<p style='color:red;'>Erro: O número da poltrona deve ser 1 ou maior</p>", status_code=400)
+    
     with Session(engine) as session:
         viagem = session.get(Viagem, viagem_id)
-
         cliente_id = request.cookies.get("cliente_id")
+        
         if not cliente_id:
-            raise HTTPException(status_code=400, detail="Nao Logado")
-        cliente_id = int(cliente_id)
+            raise HTTPException(status_code=400, detail="Não logado")
+        
+        
+        cliente = session.get(Cliente, int(cliente_id))
 
         assento_ocupado = session.exec(
             select(Reserva).where(Reserva.viagem_id == viagem_id, Reserva.assento == assento)
         ).first()
+
         if assento_ocupado:
-            raise HTTPException(status_code=400, detail="Assento já reservado")
-        reserva = Reserva(viagem_id=viagem_id, assento=assento, cliente_id=cliente_id)
+            return HTMLResponse(content=f"""
+                <div style="
+                    background: #fdf2f2; 
+                    color: #e74c3c; 
+                    padding: 10px; 
+                    border-radius: 8px; 
+                    border: 1px solid #fababa;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-top: 10px;
+                ">
+                    ❌ Poltrona {assento_ocupado.assento} já está Reservada!
+                    <br>
+                    <button hx-get="/viagens" hx-target="#resultado-busca" 
+                            style="background: none; border: underline; color: #333; cursor: pointer; font-size: 0.8rem;">
+                        Tentar Outra poltrona
+                    </button>
+                </div>
+            """)
+
+        reserva = Reserva(viagem_id=viagem_id, assento=assento, cliente_id=cliente.cliente_id)
         session.add(reserva)
         session.commit()
         session.refresh(reserva)
-    return templates.TemplateResponse(request=request, name="reserva_item.html", context={"reserva": reserva})
+        
+        _ = reserva.viagem.origem #Lazy loading forca isso
+        _ = reserva.viagem.destino
+        _ = reserva.cliente
+
+    return templates.TemplateResponse(
+        request=request, 
+        name="reserva_item.html", 
+        context={"reserva": reserva}
+    )
 
 @app.get("/reservas", response_class=HTMLResponse)
 def listar_reservas(request: Request, viagem_id: Optional[int] = None, cliente_id: Optional[int] = None):
     with Session(engine) as session:
         query = select(Reserva)
-        if viagem_id:
-            query = query.where(Reserva.viagem_id == viagem_id)
-        if cliente_id:
-            query = query.where(Reserva.cliente_id == cliente_id)
-        reservas = session.exec(query).all()
-    return templates.TemplateResponse(request=request, name="reservas_list.html", context={"reservas": reservas})
+        
+        cliente_id = request.cookies.get("cliente_id")
+        if not cliente_id:
+            raise HTTPException(status_code=400, detail="Não logado")
 
+        query = query.where(Reserva.cliente_id == int(cliente_id))
+            
+        reservas = session.exec(query).all()
+        
+        for r in reservas: #Lazy loading forca isso
+            _ = r.viagem.origem
+            _ = r.viagem.destino
+            _ = r.cliente
+            
+    return templates.TemplateResponse(
+        request=request, 
+        name="reservas_list.html", 
+        context={"reservas": reservas}
+    )
 
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
@@ -197,13 +264,65 @@ def fazer_login(nome: str = Form(...), contato: str = Form(...)):
         session.add(cliente)
         session.commit()
         session.refresh(cliente)
+    
+    response = Response(content="Sucesso", status_code=200)
+    
+    response.set_cookie(
+        key="cliente_id", 
+        value=str(cliente.cliente_id),
+        httponly=True
+    )
+    
+    response.headers["HX-Redirect"] = "/"     
+    return response 
 
-    response = RedirectResponse(url="/", status_code=303)
-    response.set_cookie(key="cliente_id", value=str(cliente.cliente_id))
 
-    return response
+@app.delete("/reservas/{reserva_id}")
+def cancelar_reserva(reserva_id: int):
+    with Session(engine) as session:
+        reserva = session.get(Reserva, reserva_id)
+        if not reserva:
+            raise HTTPException(status_code=404, detail="Reserva não encontrada")
+        
+        session.delete(reserva) 
+        session.commit()
+    
+    return Response(status_code=200)
 
-@app.get("/reset") # Para desenvolvimento local
+@app.put("/reservas/{reserva_id}", response_class=HTMLResponse)
+def atualizar_reserva(request: Request, reserva_id: int, novo_assento: int = Form(...)):
+    with Session(engine) as session:
+        reserva = session.get(Reserva, reserva_id)
+        if not reserva:
+            raise HTTPException(status_code=404)
+
+        ocupado = session.exec(
+            select(Reserva).where(
+                Reserva.viagem_id == reserva.viagem_id, 
+                Reserva.assento == novo_assento,
+                Reserva.reserva_id != reserva_id
+            )
+        ).first()
+
+        if ocupado:
+            return templates.TemplateResponse(request=request, name="reserva_item.html", context={"reserva": reserva})
+
+        reserva.assento = novo_assento
+        session.add(reserva)
+        session.commit()
+        session.refresh(reserva)
+        
+        _ = reserva.viagem.origem
+        _ = reserva.viagem.destino
+        _ = reserva.cliente
+
+    return templates.TemplateResponse(
+        request=request, 
+        name="reserva_item.html", 
+        context={"reserva": reserva}
+    )
+
+@app.get("/reset") # Usado para desenvolvimento local em testes de cookies
 def reset():
     response = RedirectResponse(url="/login")
     response.delete_cookie("cliente_id")

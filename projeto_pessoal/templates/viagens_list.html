@@ -1,14 +1,46 @@
-<ul>
-{% for v in viagens %}
-    <li>
-        Viagem {{ v.viagem_id }} | Origem {{ v.origem_id }} → Destino {{ v.destino_id }} | R$ {{ v.preco }}
-
-        <form hx-post="/reservas" hx-target="#lista-reservas" hx-swap="beforeend">
-            <input type="hidden" name="viagem_id" value="{{ v.viagem_id }}">
-            <input type="number" name="assento" placeholder="Assento" required>
-            <input type="number" name="cliente_id" placeholder="Cliente ID">
-            <button type="submit">Reservar</button>
-        </form>
-    </li>
-{% endfor %}
-</ul>
+<div class="viagens-container" style="padding: 10px; width: 100%; max-width: 800px; margin: 0 auto;">
+    {% if viagens %}
+        {% for v in viagens %}
+        <div class="viagem-card" style="width: 100%; margin-bottom: 20px; padding: 20px; background-color: #fff; border-radius: 12px; border-left: 5px solid #f39c12; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+            
+            <div style="flex: 1;">
+                <h3 style="margin: 0; color: #222; font-size: 1.2rem; font-weight: bold;">
+                    {{ v.origem.nome }} <span style="color: #f39c12;">→</span> {{ v.destino.nome }}
+                </h3>
+                <p style="margin: 8px 0 0 0; color: #666; font-size: 0.95rem;">
+                    <strong>🕒 Horário:</strong> {{ v.horario }}
+                </p>
+            </div>
+            
+            <div style="text-align: right; min-width: 220px;">
+                <span style="font-size: 1.5rem; font-weight: bold; color: #222; display: block; margin-bottom: 12px;">
+                    R$ {{ v.preco }}
+                </span>
+                
+                <form hx-post="/reservas" hx-swap="outerHTML" style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <input type="hidden" name="viagem_id" value="{{ v.viagem_id }}">
+                    
+                    <input type="number" 
+                           name="assento" 
+                           placeholder="Poltrona" 
+                           required 
+                           min="1" 
+                           style="width: 90px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; background: #fdfdfd; color: #333; font-size: 0.9rem;">
+                        
+                    <button type="submit" 
+                            style="padding: 10px 20px; background: #222; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.3s;">
+                        Reservar
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align: center; padding: 50px; background: rgba(255,255,255,0.9); border-radius: 15px; border: 1px solid #f39c12;">
+            <p style="color: #222; font-weight: bold; font-size: 1.2rem; margin: 0;">
+                Nenhuma viagem encontrada para este trecho.
+            </p>
+            <p style="color: #666; margin-top: 10px;">Tente selecionar outras cidades ou datas.</p>
+        </div>
+    {% endif %}
+</div>
