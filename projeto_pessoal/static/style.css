@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #ffb347;
+    background-color: #f1c40f;
     color: #000;
 }
 
@@ -15,7 +15,7 @@ header {
 }
 
 header .highlight {
-    color: #f39c12;
+    color: #f1c40f;
 }
 
 footer {
@@ -32,7 +32,7 @@ footer {
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 130px);
-    background-color: #ffb347;
+    background-color: #f1c40f;
 }
 
 .login-box {
@@ -51,7 +51,7 @@ footer {
 }
 
 .login-box h2 .highlight {
-    color: #f39c12;
+    color: #f1c40f;
 }
 
 .login-box input {
@@ -76,7 +76,7 @@ footer {
     margin-top: 15px;
     border-radius: 8px;
     border: none;
-    background-color: #f39c12;
+    background-color: #f1c40f;
     color: #000;
     font-weight: bold;
     font-size: 1rem;
@@ -85,5 +85,5 @@ footer {
 }
 
 .login-box button:hover {
-    background-color: #e08e0b;
+    background-color: #d4ac0d;
 }

@@ -80,13 +80,11 @@ def seed_inicial_db():
 
             custo_por_km = 0.3 
             taxa_fixa = 15.00
-            preco = taxa_fixa + (distancia * custo_por_km)
+            preco = round(taxa_fixa + (distancia * custo_por_km))
 
             minutos = random.randint(1, 7*24*60) 
 
             horario = datetime.now() + timedelta(minutes=minutos)
-
-            preco = round(random.uniform(50, 300), 2)
 
             viagens.append(
                 Viagem(
